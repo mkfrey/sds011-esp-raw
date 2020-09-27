@@ -119,7 +119,7 @@ void sds011_tx_task(void* pvParameters) {
 
   for (;;) {
     if (packet_send_remaining == 0) {
-      if (xQueueReceive(sds011_tx_queue, (void*)packet_send_buf, 0) == pdTRUE) {
+      if (xQueueReceive(sds011_tx_queue, (void*)packet_send_buf, portMAX_DELAY) == pdTRUE) {
         sds011_tx_fill_checksum(&packet_send);
         packet_send_remaining = sizeof(packet_send);
       }
