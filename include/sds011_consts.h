@@ -117,9 +117,9 @@ typedef uint8_t sds011_report_mode;
 /** Sleep mode typedef. */
 typedef uint8_t sds011_sleep_mode;
 /** Sleep mode. Sensor is in standby. */
-#define SDS011_SLEEP_MODE_SLEEP 0
+#define SDS011_SLEEP_MODE_ENABLED 0
 /** Work mode. Sensor is working. */
-#define SDS011_SLEEP_MODE_WORK 1
+#define SDS011_SLEEP_MODE_DISABLED 1
 
 /** Broadcast device ID. */
 #define SDS011_DEVICE_ID_ALL 0xFFFF
