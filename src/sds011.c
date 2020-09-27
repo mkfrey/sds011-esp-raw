@@ -89,11 +89,11 @@ void sds011_begin(const uart_port_t uart_num,
 
   /** Create the TX and RX tasks. */
   assert(xTaskCreatePinnedToCore(sds011_tx_task, SDS011_TASK_NAME,
-                                 SDS011_TASK_STACK_DEPTH, NULL, 0,
+                                 SDS011_TASK_STACK_DEPTH, NULL, 1,
                                  &sds011_tx_task_handle, 1) == pdPASS);
 
   assert(xTaskCreatePinnedToCore(sds011_rx_task, SDS011_TASK_NAME,
-                                 SDS011_TASK_STACK_DEPTH, NULL, 0,
+                                 SDS011_TASK_STACK_DEPTH, NULL, 1,
                                  &sds011_rx_task_handle, 1) == pdPASS);
 }
 
