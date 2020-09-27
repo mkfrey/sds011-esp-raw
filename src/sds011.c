@@ -69,7 +69,16 @@ void sds011_begin(const uart_port_t uart_num,
       .parity = SDS011_UART_PARITY,
       .stop_bits = SDS011_UART_STOP_BITS,
       .flow_ctrl = SDS011_UART_FLOW_CTRL,
-      .rx_flow_ctrl_thresh = SDS011_UART_FLOW_CTR_THRESH};
+      .rx_flow_ctrl_thresh = SDS011_UART_FLOW_CTR_THRESH
+#ifdef CONFIG_PM_ENABLE
+      ,
+#ifdef UART_SCLK_REF_TICK
+      .source_clk = UART_SCLK_REF_TICK
+#else
+      .use_ref_tick = true
+#endif
+#endif
+  };
 
   ESP_ERROR_CHECK(uart_param_config(sds011_uart_num, &uart_config));
   ESP_ERROR_CHECK(uart_set_pin(sds011_uart_num, tx_io_num, rx_io_num,
@@ -172,8 +181,8 @@ void sds011_rx_task(void* pvParameters) {
         switch (packet_recv.command) {
           case SDS011_RX_CMD_SENSOR_DATA:
 #if SDS011_RX_DATA_QUEUE_SIZE == 1
-            assert(xQueueOverwrite(sds011_rx_data_queue, (const void*)&packet_recv) ==
-                   pdTRUE);
+            assert(xQueueOverwrite(sds011_rx_data_queue,
+                                   (const void*)&packet_recv) == pdTRUE);
 #else
             xQueueSendToBack(sds011_data_queue, (const void*)&data,
                              (TickType_t)0);
@@ -181,8 +190,8 @@ void sds011_rx_task(void* pvParameters) {
             break;
           default:
 #if SDS011_RX_CMD_QUEUE_SIZE == 1
-            assert(xQueueOverwrite(sds011_rx_cmd_queue, (const void*)&packet_recv) ==
-                   pdTRUE);
+            assert(xQueueOverwrite(sds011_rx_cmd_queue,
+                                   (const void*)&packet_recv) == pdTRUE);
 #else
             xQueueSendToBack(sds011_rx_cmd_queue, (const void*)&data,
                              (TickType_t)0);
@@ -194,9 +203,8 @@ void sds011_rx_task(void* pvParameters) {
         uart_flush(sds011_uart_num);
 
 #ifdef SDS011_DEBUG
-      printf("Received invalid packet!\n");
+        printf("Received invalid packet!\n");
 #endif
-
       }
 
       packet_recv_remaining = sizeof(packet_recv);
