@@ -88,12 +88,12 @@ void sds011_begin(const uart_port_t uart_num,
       SDS011_UART_EVENT_QUEUE_SIZE, NULL, 0));
 
   /** Create the TX and RX tasks. */
-  assert(xTaskCreatePinnedToCore(sds011_tx_task, SDS011_TASK_NAME,
-                                 SDS011_TASK_STACK_DEPTH, NULL, 1,
+  assert(xTaskCreatePinnedToCore(sds011_tx_task, SDS011_TX_TASK_NAME,
+                                 SDS011_TX_TASK_STACK_DEPTH, NULL, 1,
                                  &sds011_tx_task_handle, 1) == pdPASS);
 
-  assert(xTaskCreatePinnedToCore(sds011_rx_task, SDS011_TASK_NAME,
-                                 SDS011_TASK_STACK_DEPTH, NULL, 1,
+  assert(xTaskCreatePinnedToCore(sds011_rx_task, SDS011_RX_TASK_NAME,
+                                 SDS011_RX_TASK_STACK_DEPTH, NULL, 1,
                                  &sds011_rx_task_handle, 1) == pdPASS);
 }
 
@@ -119,7 +119,8 @@ void sds011_tx_task(void* pvParameters) {
 
   for (;;) {
     if (packet_send_remaining == 0) {
-      if (xQueueReceive(sds011_tx_queue, (void*)packet_send_buf, portMAX_DELAY) == pdTRUE) {
+      if (xQueueReceive(sds011_tx_queue, (void*)packet_send_buf,
+                        portMAX_DELAY) == pdTRUE) {
         sds011_tx_fill_checksum(&packet_send);
         packet_send_remaining = sizeof(packet_send);
       }
