@@ -20,8 +20,10 @@
 #define SDS011_UART_RX_BUFFER_SIZE (1024 * 1)
 
 /** Name of the task processing the UART data. */
-#define SDS011_TASK_NAME "sds011"
-#define SDS011_TASK_STACK_DEPTH 2048
+#define SDS011_TX_TASK_NAME "sds011tx"
+#define SDS011_RX_TASK_NAME "sds011rx"
+#define SDS011_TX_TASK_STACK_DEPTH 2048
+#define SDS011_RX_TASK_STACK_DEPTH 2048
 
 /** Enable debugging output for development purposes. */
 //#define SDS011_DEBUG
